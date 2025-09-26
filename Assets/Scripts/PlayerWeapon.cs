@@ -1,48 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    PlayerDirection playerDirection;
+    PlayerDirection direction;
+    public GameObject bullet;
+    PlayerInventory inventory;
 
-    public GameObject bulletPrefab;
-    public Transform firingPositionForward;
-    public Transform firingPositionUpward;
+    public Transform FireForward;
+    public Transform FireUp;
 
-    public float firingSpeed = 10f;
+    public float FireSpeed = 10f;
 
-    void Awake()
-    {
-        playerDirection = this.GetComponentInParent<PlayerDirection>();
+    void Awake(){
+        direction = this.GetComponentInParent<PlayerDirection>();
+        inventory = this.GetComponentInParent<PlayerInventory>();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            GameObject bulletInstance = GameObject.Instantiate(bulletPrefab);
+    void Update(){
+        if(Input.GetKeyDown(KeyCode.X)){
+            GameObject bulletInstance = GameObject.Instantiate(bullet);
 
-            if (playerDirection.IsLookingUp())
-            {
-                bulletInstance.transform.position = firingPositionUpward.position;
-                bulletInstance.GetComponent<Rigidbody>().velocity = Vector3.up * firingSpeed;
+            if(direction.IsLookingUp()){
+                bulletInstance.transform.position = FireUp.position;
+                bulletInstance.GetComponent<Rigidbody>().linearVelocity = Vector3.up * FireSpeed;
+            } else {
+                bulletInstance.transform.position = FireForward.position;
+                if (direction.IsFacingRight()) {bulletInstance.GetComponent<Rigidbody>().linearVelocity = Vector3.right * FireSpeed;}
+                else {bulletInstance.GetComponent<Rigidbody>().linearVelocity = Vector3.left * FireSpeed;}
+
+
             }
-            else
-            {
-                bulletInstance.transform.position = firingPositionForward.position;
-                if (playerDirection.IsFacingRight())
-                {
-                    bulletInstance.GetComponent<Rigidbody>().velocity = Vector3.right * firingSpeed;
-                }
-                else
-                {
-                    bulletInstance.GetComponent<Rigidbody>().velocity = Vector3.left * firingSpeed;
-                }
-            }
+            if(!inventory.hasLongBeam()) {Destroy(bulletInstance, 0.35f);}
         }
-
-        
     }
 }

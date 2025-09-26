@@ -1,27 +1,21 @@
+using UnityEngine;
+//using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
-using UnityEditor.Il2Cpp;
-using UnityEngine;
 
 public class PlayerRun : MonoBehaviour
 {
-    Rigidbody rigid;
+    Rigidbody rb;
+    public float MoveSpeed = 5f;
+    public float JumpPower = 12f;
 
-    public float moveSpeed = 5;
-    private bool isKnockback = false;
-
-    void Awake()
-    {
-        rigid = this.GetComponent<Rigidbody>();
+    void Awake(){
+        rb = this.GetComponent<Rigidbody>();
     }
+    void Update(){
+        Vector3 NewVelocity = rb.linearVelocity;
+        NewVelocity.x = Input.GetAxis("Horizontal") * MoveSpeed;
+        rb.linearVelocity = NewVelocity;
 
-    void Update()
-    {
-        UnityEngine.Vector3 newVelocity = rigid.velocity;
-
-        newVelocity.x = Input.GetAxis("Horizontal") * moveSpeed;
-
-        rigid.velocity = newVelocity;
     }
 }

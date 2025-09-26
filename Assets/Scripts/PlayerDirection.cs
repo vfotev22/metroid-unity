@@ -1,50 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerDirection : MonoBehaviour
 {
-    public SpriteRenderer spriteRenderer;
-    public Sprite spriteLookingForward;
-    public Sprite spriteLookingUpward;
+    public SpriteRenderer SpriteRenderer;
+    public Sprite LookingForwardSprite;
+    public Sprite LookingUpSprite;
 
-    bool facingRight = true;
-    bool lookingUp = false;
-
+    bool FacingRight = true;
+    bool LookingUp = false;
+   
     void Update()
     {
+        // looking left and right
         float HorizontalAxis = Input.GetAxis("Horizontal");
-        if (facingRight && HorizontalAxis < 0)
-        {
-            facingRight = false;
+        if(FacingRight && HorizontalAxis < 0){
+            FacingRight = false;
             this.transform.localScale = new Vector3(-1, 1, 1);
         }
-        else if (!facingRight && HorizontalAxis > 0)
-        {
-            facingRight = true;
+        if(!FacingRight && HorizontalAxis > 0){
+            FacingRight = true;
             this.transform.localScale = new Vector3(1, 1, 1);
         }
 
-        bool holdingUp = Input.GetKey(KeyCode.UpArrow);
-        if (lookingUp && !holdingUp)
-        {
-            lookingUp = false;
-            spriteRenderer.sprite = spriteLookingForward;
-        }
-        else if (!lookingUp && holdingUp)
-        {
-            lookingUp = true;
-            spriteRenderer.sprite = spriteLookingUpward;
+        // looking up and not looking up
+        bool HoldingUp = Input.GetKey(KeyCode.UpArrow);
+        if (LookingUp && !HoldingUp){
+            LookingUp = false;
+            SpriteRenderer.sprite = LookingForwardSprite;
+        } else if (!LookingUp && HoldingUp){
+            LookingUp = true;
+            SpriteRenderer.sprite = LookingUpSprite;
         }
     }
 
-    public bool IsFacingRight()
-    {
-        return facingRight;
-    }
-
-    public bool IsLookingUp()
-    {
-        return lookingUp;
-    }
+    // Get facing directions
+        public bool IsFacingRight(){
+            return FacingRight;
+        }
+        public bool IsLookingUp(){
+            return LookingUp;
+        }
 }
