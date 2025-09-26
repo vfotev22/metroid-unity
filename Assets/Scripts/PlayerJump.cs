@@ -1,75 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerJump : MonoBehaviour
 {
-    Rigidbody rigid;
-    Collider col;
-    public PlayerRun run;
-
-    public float jumpPower = 10.3f;
-    public float jumpCutMultiplier = 0.35f;
-
-    private bool wasGrounded;
-    public bool lastJumpWasRunJump;
+    public float JumpPower = 12f;
+    Rigidbody rb;
+    Collider c;
 
     void Awake()
     {
-        rigid = this.GetComponentInParent<Rigidbody>();
-        col = this.GetComponent<Collider>();
-        run = this.GetComponentInParent<PlayerRun>();
+        rb = this.GetComponentInParent<Rigidbody>();
+        c = this.GetComponent<Collider>();
     }
-
+    // Update is called once per frame
     void Update()
     {
-        Vector3 newVelocity = rigid.velocity;
-
-        bool grounded = IsGrounded();
-        
-        if (Input.GetKeyDown(KeyCode.Z) && IsGrounded())
-        {
-            newVelocity.y = jumpPower;
-
-            lastJumpWasRunJump = Mathf.Abs(Input.GetAxisRaw("Horizontal")) > .01f;
-
-            if (run != null)
-            {
-                bool standingStill = Mathf.Abs(Input.GetAxisRaw("Horizontal")) < .01f;
-                run.moveSpeed = standingStill ? 4f : 5f;
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.Z) && newVelocity.y > 0f)
-        {
-            newVelocity.y *= jumpCutMultiplier;
-        }
-
-        if (grounded && !wasGrounded && run != null)
-            {
-                run.moveSpeed = 5f;
-                lastJumpWasRunJump = false;
-            }
-
-        rigid.velocity = newVelocity;
-        wasGrounded = grounded;
+        Vector3 NewVelocity = rb.linearVelocity;
+        if (Input.GetKeyDown(KeyCode.Z) && IsGrounded()) {NewVelocity.y = JumpPower;}
+        rb.linearVelocity = NewVelocity;
     }
 
-    public bool IsRunJumping()
-    {
-        return !IsGrounded() && lastJumpWasRunJump;
-    }
+    bool IsGrounded(){
+        Collider c = this.GetComponentInChildren<Collider>();
+        Ray r = new Ray(c.bounds.center, Vector3.down);
+        float radius = c.bounds.extents.x - 0.05f;
+        float FullDistance = c.bounds.extents.y + 0.05f;
 
-    public bool IsGrounded()
-    {
-        Collider col = GetComponentInChildren<Collider>();
-
-        Ray ray = new Ray(col.bounds.center, Vector3.down);
-
-        float radius = col.bounds.extents.x - 0.05f;
-
-        float fullDistance = col.bounds.extents.y + 0.05f;
-
-        return Physics.SphereCast(ray, radius, fullDistance);
+        if (Physics.SphereCast(r, radius, FullDistance))
+            return true;
+        else
+            return false;
     }
 }

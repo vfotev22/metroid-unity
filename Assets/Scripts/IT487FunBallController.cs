@@ -38,7 +38,7 @@ public class IT487FunBallController : MonoBehaviour {
     }
 
     void Update() {
-        rb.velocity += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * acceleration * Time.deltaTime;
+        rb.linearVelocity += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * acceleration * Time.deltaTime;
     }
 
     /* Detect collision and report to listeners */
